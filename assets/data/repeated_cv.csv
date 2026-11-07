@@ -1,0 +1,9 @@
+model,strategy,recall_mean,recall_sd,f1_mean,f1_sd,mcc_mean,mcc_sd
+SVM,ROS,0.827,0.113,0.78,0.06,0.71,0.076
+SVM,class weights,0.827,0.103,0.773,0.049,0.7,0.065
+SVM,SMOTE,0.81,0.115,0.769,0.058,0.696,0.071
+SVM,baseline,0.72,0.125,0.758,0.085,0.693,0.106
+Random Forest,ROS,0.547,0.123,0.668,0.098,0.625,0.097
+Random Forest,SMOTE,0.593,0.155,0.68,0.119,0.62,0.117
+Random Forest,baseline,0.463,0.129,0.607,0.127,0.58,0.126
+Random Forest,class weights,0.38,0.105,0.534,0.108,0.532,0.089
