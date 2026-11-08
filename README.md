@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-  <b>🔗 Live app:</b> <a href="https://YOUR-APP-NAME.streamlit.app">https://YOUR-APP-NAME.streamlit.app</a>
+  <b>🔗 Live app:</b> <a href="https://cataract-detection-dashboard.streamlit.app/">https://cataract-detection-dashboard.streamlit.app/</a>
 </p>
 
 ---
@@ -33,25 +33,39 @@ All powered by **Streamlit**, **Plotly**, **TensorFlow**, **scikit-learn**, **Op
 
 ---
 
+### 🖼️ What the Model Sees
+Two normal and two cataract fundus photographs from the dataset. A cloudy lens softens the cataract photographs, which lowers the sharpness measurements the models learn from.
+
+<table align="center">
+  <tr>
+    <td align="center"><img src="assets/img/normal_1.jpg" width="230"><br><sub>Normal</sub></td>
+    <td align="center"><img src="assets/img/normal_2.jpg" width="230"><br><sub>Normal</sub></td>
+    <td align="center"><img src="assets/img/cataract_1.jpg" width="230"><br><sub>Cataract</sub></td>
+    <td align="center"><img src="assets/img/cataract_2.jpg" width="230"><br><sub>Cataract</sub></td>
+  </tr>
+</table>
+
+---
+
 ### 🏠 Overview Page
 Headline metrics of the best model, the class split, its confusion matrix and a filterable table of all 21 experiments.
 
-<!-- Add a screenshot: drag the image into this file in the GitHub editor, or use <p align="center"><img src="docs/overview.png" width="1200"></p> -->
+<p align="center"><img src="docs/overview.png" width="1200"></p>
 
 ### 📖 What is Cataract: Descriptive Analytics
 Causes, symptoms, a blur simulator that shows how a clouded lens softens a photograph, and the dataset split.
 
-<!-- Add a screenshot of the page here -->
+<p align="center"><img src="docs/descriptive.png" width="1200"></p>
 
 ### 🔬 Under the Lens: Diagnostic Analytics
 A case file of interactive charts: clarity features by class, the accuracy trap, missed cataracts and false alarms, which imbalance strategy helps, how sure each result is, and a live cutoff slider.
 
-<!-- Add a screenshot of the page here -->
+<p align="center"><img src="docs/diagnostic.png" width="1200"></p>
 
 ### 🩺 Screen a Photo: Predictive and Prescriptive Analytics
 Upload or pick a fundus photograph, see what the computer measures, read the model's result, and get advice and a screening policy.
 
-<!-- Add a screenshot of the page here -->
+<p align="center"><img src="docs/predictive.png" width="1200"></p>
 
 ---
 
@@ -94,6 +108,13 @@ Upload or pick a fundus photograph, see what the computer measures, read the mod
 
 The best classical model, the SVM baseline, reached MCC 0.695. The Small CNN with augmentation scored 75% accuracy but found no cataract, which shows why accuracy alone misleads.
 
+<table align="center">
+  <tr>
+    <td align="center"><img src="docs/confusion_matrix.png" width="380"><br><sub>EfficientNetB0 + class weights: 1 missed cataract, 9 false alarms</sub></td>
+    <td align="center"><img src="docs/mcc_ranking.png" width="520"><br><sub>MCC of all 21 experiments</sub></td>
+  </tr>
+</table>
+
 ---
 
 ## 🧩 Project Structure
@@ -121,6 +142,8 @@ The best classical model, the SVM baseline, reached MCC 0.695. The Small CNN wit
 │   ├── 📄 what_is_cataract.py
 │   ├── 📄 under_the_lens.py
 │   └── 📄 screen_yourself.py
+│
+│── 📂 docs/                # figures used in this README
 │
 │── 📂 Cataract Classification/
 │   └── 📄 Cataract_classification.ipynb
