@@ -1,0 +1,721 @@
+model,strategy,y_true,score
+Small CNN,baseline,0,0.69569
+Small CNN,baseline,0,0.07677
+Small CNN,baseline,1,0.63831
+Small CNN,baseline,0,0.09015
+Small CNN,baseline,0,0.41277
+Small CNN,baseline,0,0.28784
+Small CNN,baseline,0,0.06291
+Small CNN,baseline,0,0.1062
+Small CNN,baseline,0,0.12628
+Small CNN,baseline,1,0.98786
+Small CNN,baseline,1,0.89729
+Small CNN,baseline,0,0.10315
+Small CNN,baseline,0,0.14813
+Small CNN,baseline,0,0.09115
+Small CNN,baseline,0,0.13498
+Small CNN,baseline,1,0.9672
+Small CNN,baseline,0,0.13496
+Small CNN,baseline,0,0.17382
+Small CNN,baseline,1,0.95445
+Small CNN,baseline,0,0.20184
+Small CNN,baseline,0,0.08763
+Small CNN,baseline,0,0.12803
+Small CNN,baseline,1,0.9399
+Small CNN,baseline,0,0.13068
+Small CNN,baseline,1,0.99558
+Small CNN,baseline,0,0.08983
+Small CNN,baseline,0,0.09066
+Small CNN,baseline,0,0.09507
+Small CNN,baseline,0,0.27987
+Small CNN,baseline,0,0.16014
+Small CNN,baseline,1,0.22495
+Small CNN,baseline,0,0.09955
+Small CNN,baseline,0,0.08733
+Small CNN,baseline,0,0.09346
+Small CNN,baseline,0,0.64048
+Small CNN,baseline,0,0.09579
+Small CNN,baseline,0,0.10142
+Small CNN,baseline,1,0.649
+Small CNN,baseline,0,0.11278
+Small CNN,baseline,0,0.29915
+Small CNN,baseline,0,0.08991
+Small CNN,baseline,1,0.17207
+Small CNN,baseline,1,0.21596
+Small CNN,baseline,0,0.07341
+Small CNN,baseline,1,0.22666
+Small CNN,baseline,0,0.08765
+Small CNN,baseline,0,0.12403
+Small CNN,baseline,0,0.05289
+Small CNN,baseline,0,0.0473
+Small CNN,baseline,0,0.09015
+Small CNN,baseline,0,0.11056
+Small CNN,baseline,0,0.39784
+Small CNN,baseline,0,0.07697
+Small CNN,baseline,0,0.05056
+Small CNN,baseline,1,0.96422
+Small CNN,baseline,0,0.10374
+Small CNN,baseline,0,0.23529
+Small CNN,baseline,0,0.09552
+Small CNN,baseline,0,0.14741
+Small CNN,baseline,1,0.57454
+Small CNN,baseline,1,0.98937
+Small CNN,baseline,0,0.18205
+Small CNN,baseline,0,0.20395
+Small CNN,baseline,0,0.25444
+Small CNN,baseline,0,0.0485
+Small CNN,baseline,0,0.13546
+Small CNN,baseline,1,0.89632
+Small CNN,baseline,0,0.39143
+Small CNN,baseline,0,0.6422
+Small CNN,baseline,0,0.10032
+Small CNN,baseline,0,0.18955
+Small CNN,baseline,1,0.46964
+Small CNN,baseline,1,0.9463
+Small CNN,baseline,0,0.18237
+Small CNN,baseline,0,0.11494
+Small CNN,baseline,0,0.49074
+Small CNN,baseline,0,0.11812
+Small CNN,baseline,1,0.38731
+Small CNN,baseline,1,0.97228
+Small CNN,baseline,0,0.24887
+Small CNN,class weights,0,0.72581
+Small CNN,class weights,0,0.10888
+Small CNN,class weights,1,0.59033
+Small CNN,class weights,0,0.0695
+Small CNN,class weights,0,0.48556
+Small CNN,class weights,0,0.47124
+Small CNN,class weights,0,0.12507
+Small CNN,class weights,0,0.07986
+Small CNN,class weights,0,0.36677
+Small CNN,class weights,1,0.96638
+Small CNN,class weights,1,0.89063
+Small CNN,class weights,0,0.09108
+Small CNN,class weights,0,0.20583
+Small CNN,class weights,0,0.06014
+Small CNN,class weights,0,0.18784
+Small CNN,class weights,1,0.96464
+Small CNN,class weights,0,0.34842
+Small CNN,class weights,0,0.21153
+Small CNN,class weights,1,0.93493
+Small CNN,class weights,0,0.28092
+Small CNN,class weights,0,0.0899
+Small CNN,class weights,0,0.17649
+Small CNN,class weights,1,0.90579
+Small CNN,class weights,0,0.22649
+Small CNN,class weights,1,0.99168
+Small CNN,class weights,0,0.0929
+Small CNN,class weights,0,0.1256
+Small CNN,class weights,0,0.07014
+Small CNN,class weights,0,0.1742
+Small CNN,class weights,0,0.35748
+Small CNN,class weights,1,0.6155
+Small CNN,class weights,0,0.07056
+Small CNN,class weights,0,0.1293
+Small CNN,class weights,0,0.09758
+Small CNN,class weights,0,0.71915
+Small CNN,class weights,0,0.38608
+Small CNN,class weights,0,0.16491
+Small CNN,class weights,1,0.59246
+Small CNN,class weights,0,0.12984
+Small CNN,class weights,0,0.48492
+Small CNN,class weights,0,0.06377
+Small CNN,class weights,1,0.37046
+Small CNN,class weights,1,0.37583
+Small CNN,class weights,0,0.10759
+Small CNN,class weights,1,0.43832
+Small CNN,class weights,0,0.22896
+Small CNN,class weights,0,0.16129
+Small CNN,class weights,0,0.12049
+Small CNN,class weights,0,0.08476
+Small CNN,class weights,0,0.07123
+Small CNN,class weights,0,0.06513
+Small CNN,class weights,0,0.48415
+Small CNN,class weights,0,0.12194
+Small CNN,class weights,0,0.08225
+Small CNN,class weights,1,0.90755
+Small CNN,class weights,0,0.14016
+Small CNN,class weights,0,0.31182
+Small CNN,class weights,0,0.12024
+Small CNN,class weights,0,0.18638
+Small CNN,class weights,1,0.17233
+Small CNN,class weights,1,0.97301
+Small CNN,class weights,0,0.16487
+Small CNN,class weights,0,0.20967
+Small CNN,class weights,0,0.42585
+Small CNN,class weights,0,0.11991
+Small CNN,class weights,0,0.23622
+Small CNN,class weights,1,0.91384
+Small CNN,class weights,0,0.4874
+Small CNN,class weights,0,0.60743
+Small CNN,class weights,0,0.11089
+Small CNN,class weights,0,0.36348
+Small CNN,class weights,1,0.41613
+Small CNN,class weights,1,0.9518
+Small CNN,class weights,0,0.46454
+Small CNN,class weights,0,0.0798
+Small CNN,class weights,0,0.65559
+Small CNN,class weights,0,0.29946
+Small CNN,class weights,1,0.52647
+Small CNN,class weights,1,0.95023
+Small CNN,class weights,0,0.47615
+Small CNN,augmentation,0,0.51921
+Small CNN,augmentation,0,0.12909
+Small CNN,augmentation,1,0.51258
+Small CNN,augmentation,0,0.16812
+Small CNN,augmentation,0,0.35414
+Small CNN,augmentation,0,0.30488
+Small CNN,augmentation,0,0.10328
+Small CNN,augmentation,0,0.18801
+Small CNN,augmentation,0,0.14316
+Small CNN,augmentation,1,0.85221
+Small CNN,augmentation,1,0.70267
+Small CNN,augmentation,0,0.18092
+Small CNN,augmentation,0,0.21467
+Small CNN,augmentation,0,0.16889
+Small CNN,augmentation,0,0.20422
+Small CNN,augmentation,1,0.81182
+Small CNN,augmentation,0,0.15436
+Small CNN,augmentation,0,0.26964
+Small CNN,augmentation,1,0.76746
+Small CNN,augmentation,0,0.31934
+Small CNN,augmentation,0,0.15433
+Small CNN,augmentation,0,0.18045
+Small CNN,augmentation,1,0.73942
+Small CNN,augmentation,0,0.17008
+Small CNN,augmentation,1,0.895
+Small CNN,augmentation,0,0.16139
+Small CNN,augmentation,0,0.15515
+Small CNN,augmentation,0,0.15985
+Small CNN,augmentation,0,0.39674
+Small CNN,augmentation,0,0.19314
+Small CNN,augmentation,1,0.20048
+Small CNN,augmentation,0,0.17432
+Small CNN,augmentation,0,0.14055
+Small CNN,augmentation,0,0.15702
+Small CNN,augmentation,0,0.51981
+Small CNN,augmentation,0,0.10234
+Small CNN,augmentation,0,0.12831
+Small CNN,augmentation,1,0.52504
+Small CNN,augmentation,0,0.17007
+Small CNN,augmentation,0,0.39217
+Small CNN,augmentation,0,0.16605
+Small CNN,augmentation,1,0.19671
+Small CNN,augmentation,1,0.22413
+Small CNN,augmentation,0,0.12017
+Small CNN,augmentation,1,0.27776
+Small CNN,augmentation,0,0.10833
+Small CNN,augmentation,0,0.16307
+Small CNN,augmentation,0,0.09331
+Small CNN,augmentation,0,0.09553
+Small CNN,augmentation,0,0.18261
+Small CNN,augmentation,0,0.17888
+Small CNN,augmentation,0,0.38714
+Small CNN,augmentation,0,0.11885
+Small CNN,augmentation,0,0.09615
+Small CNN,augmentation,1,0.7684
+Small CNN,augmentation,0,0.15713
+Small CNN,augmentation,0,0.26985
+Small CNN,augmentation,0,0.14875
+Small CNN,augmentation,0,0.18522
+Small CNN,augmentation,1,0.4901
+Small CNN,augmentation,1,0.88054
+Small CNN,augmentation,0,0.27032
+Small CNN,augmentation,0,0.32626
+Small CNN,augmentation,0,0.29968
+Small CNN,augmentation,0,0.06737
+Small CNN,augmentation,0,0.16438
+Small CNN,augmentation,1,0.66829
+Small CNN,augmentation,0,0.34849
+Small CNN,augmentation,0,0.53189
+Small CNN,augmentation,0,0.15713
+Small CNN,augmentation,0,0.23506
+Small CNN,augmentation,1,0.3474
+Small CNN,augmentation,1,0.76798
+Small CNN,augmentation,0,0.20273
+Small CNN,augmentation,0,0.2051
+Small CNN,augmentation,0,0.40319
+Small CNN,augmentation,0,0.13095
+Small CNN,augmentation,1,0.35294
+Small CNN,augmentation,1,0.82528
+Small CNN,augmentation,0,0.27572
+MobileNetV2,baseline,0,0.34931
+MobileNetV2,baseline,0,0.00539
+MobileNetV2,baseline,1,0.24885
+MobileNetV2,baseline,0,0.01428
+MobileNetV2,baseline,0,0.0631
+MobileNetV2,baseline,0,0.42982
+MobileNetV2,baseline,0,0.12002
+MobileNetV2,baseline,0,0.01777
+MobileNetV2,baseline,0,0.5286
+MobileNetV2,baseline,1,0.99859
+MobileNetV2,baseline,1,0.9551
+MobileNetV2,baseline,0,0.03093
+MobileNetV2,baseline,0,0.06571
+MobileNetV2,baseline,0,0.00182
+MobileNetV2,baseline,0,0.10814
+MobileNetV2,baseline,1,0.99404
+MobileNetV2,baseline,0,0.01277
+MobileNetV2,baseline,0,0.03651
+MobileNetV2,baseline,1,0.98509
+MobileNetV2,baseline,0,0.02894
+MobileNetV2,baseline,0,0.00232
+MobileNetV2,baseline,0,0.03156
+MobileNetV2,baseline,1,0.973
+MobileNetV2,baseline,0,0.02188
+MobileNetV2,baseline,1,0.99962
+MobileNetV2,baseline,0,0.00608
+MobileNetV2,baseline,0,0.01294
+MobileNetV2,baseline,0,0.01602
+MobileNetV2,baseline,0,0.56275
+MobileNetV2,baseline,0,0.26158
+MobileNetV2,baseline,1,0.28942
+MobileNetV2,baseline,0,0.02574
+MobileNetV2,baseline,0,0.03296
+MobileNetV2,baseline,0,0.00366
+MobileNetV2,baseline,0,0.33805
+MobileNetV2,baseline,0,0.78382
+MobileNetV2,baseline,0,0.00584
+MobileNetV2,baseline,1,0.42696
+MobileNetV2,baseline,0,0.01899
+MobileNetV2,baseline,0,0.08722
+MobileNetV2,baseline,0,0.00583
+MobileNetV2,baseline,1,0.27539
+MobileNetV2,baseline,1,0.67858
+MobileNetV2,baseline,0,0.00128
+MobileNetV2,baseline,1,0.37085
+MobileNetV2,baseline,0,0.00306
+MobileNetV2,baseline,0,0.03486
+MobileNetV2,baseline,0,0.00129
+MobileNetV2,baseline,0,0.00588
+MobileNetV2,baseline,0,0.01134
+MobileNetV2,baseline,0,0.01418
+MobileNetV2,baseline,0,0.03186
+MobileNetV2,baseline,0,0.02243
+MobileNetV2,baseline,0,0.0079
+MobileNetV2,baseline,1,0.36325
+MobileNetV2,baseline,0,0.00454
+MobileNetV2,baseline,0,0.35178
+MobileNetV2,baseline,0,0.09335
+MobileNetV2,baseline,0,0.11319
+MobileNetV2,baseline,1,0.86079
+MobileNetV2,baseline,1,0.99913
+MobileNetV2,baseline,0,0.0075
+MobileNetV2,baseline,0,0.00084
+MobileNetV2,baseline,0,0.50953
+MobileNetV2,baseline,0,0.02971
+MobileNetV2,baseline,0,0.03441
+MobileNetV2,baseline,1,0.99168
+MobileNetV2,baseline,0,0.75703
+MobileNetV2,baseline,0,0.14738
+MobileNetV2,baseline,0,0.00907
+MobileNetV2,baseline,0,0.60068
+MobileNetV2,baseline,1,0.61082
+MobileNetV2,baseline,1,0.99892
+MobileNetV2,baseline,0,0.04994
+MobileNetV2,baseline,0,0.09721
+MobileNetV2,baseline,0,0.03136
+MobileNetV2,baseline,0,0.01632
+MobileNetV2,baseline,1,0.81853
+MobileNetV2,baseline,1,0.97749
+MobileNetV2,baseline,0,0.26334
+MobileNetV2,class weights,0,0.56366
+MobileNetV2,class weights,0,0.03346
+MobileNetV2,class weights,1,0.64416
+MobileNetV2,class weights,0,0.11605
+MobileNetV2,class weights,0,0.14026
+MobileNetV2,class weights,0,0.78618
+MobileNetV2,class weights,0,0.16745
+MobileNetV2,class weights,0,0.05033
+MobileNetV2,class weights,0,0.53806
+MobileNetV2,class weights,1,0.98358
+MobileNetV2,class weights,1,0.93238
+MobileNetV2,class weights,0,0.14518
+MobileNetV2,class weights,0,0.11762
+MobileNetV2,class weights,0,0.00954
+MobileNetV2,class weights,0,0.27084
+MobileNetV2,class weights,1,0.98415
+MobileNetV2,class weights,0,0.03713
+MobileNetV2,class weights,0,0.11677
+MobileNetV2,class weights,1,0.97463
+MobileNetV2,class weights,0,0.05693
+MobileNetV2,class weights,0,0.02415
+MobileNetV2,class weights,0,0.13837
+MobileNetV2,class weights,1,0.94017
+MobileNetV2,class weights,0,0.07634
+MobileNetV2,class weights,1,0.99691
+MobileNetV2,class weights,0,0.03815
+MobileNetV2,class weights,0,0.22347
+MobileNetV2,class weights,0,0.07904
+MobileNetV2,class weights,0,0.48053
+MobileNetV2,class weights,0,0.52256
+MobileNetV2,class weights,1,0.50149
+MobileNetV2,class weights,0,0.07726
+MobileNetV2,class weights,0,0.17246
+MobileNetV2,class weights,0,0.03495
+MobileNetV2,class weights,0,0.74785
+MobileNetV2,class weights,0,0.65756
+MobileNetV2,class weights,0,0.03235
+MobileNetV2,class weights,1,0.57811
+MobileNetV2,class weights,0,0.03301
+MobileNetV2,class weights,0,0.14347
+MobileNetV2,class weights,0,0.03495
+MobileNetV2,class weights,1,0.29395
+MobileNetV2,class weights,1,0.73296
+MobileNetV2,class weights,0,0.00496
+MobileNetV2,class weights,1,0.49508
+MobileNetV2,class weights,0,0.02603
+MobileNetV2,class weights,0,0.09757
+MobileNetV2,class weights,0,0.0105
+MobileNetV2,class weights,0,0.0442
+MobileNetV2,class weights,0,0.07128
+MobileNetV2,class weights,0,0.03712
+MobileNetV2,class weights,0,0.05484
+MobileNetV2,class weights,0,0.12558
+MobileNetV2,class weights,0,0.0457
+MobileNetV2,class weights,1,0.43456
+MobileNetV2,class weights,0,0.02907
+MobileNetV2,class weights,0,0.3009
+MobileNetV2,class weights,0,0.13992
+MobileNetV2,class weights,0,0.37822
+MobileNetV2,class weights,1,0.91699
+MobileNetV2,class weights,1,0.99398
+MobileNetV2,class weights,0,0.03979
+MobileNetV2,class weights,0,0.02253
+MobileNetV2,class weights,0,0.69272
+MobileNetV2,class weights,0,0.10813
+MobileNetV2,class weights,0,0.11372
+MobileNetV2,class weights,1,0.98784
+MobileNetV2,class weights,0,0.85707
+MobileNetV2,class weights,0,0.30524
+MobileNetV2,class weights,0,0.02397
+MobileNetV2,class weights,0,0.6968
+MobileNetV2,class weights,1,0.54214
+MobileNetV2,class weights,1,0.99677
+MobileNetV2,class weights,0,0.16908
+MobileNetV2,class weights,0,0.1765
+MobileNetV2,class weights,0,0.09233
+MobileNetV2,class weights,0,0.04392
+MobileNetV2,class weights,1,0.7406
+MobileNetV2,class weights,1,0.93595
+MobileNetV2,class weights,0,0.58187
+MobileNetV2,augmentation,0,0.41613
+MobileNetV2,augmentation,0,0.00681
+MobileNetV2,augmentation,1,0.18405
+MobileNetV2,augmentation,0,0.02476
+MobileNetV2,augmentation,0,0.02424
+MobileNetV2,augmentation,0,0.46105
+MobileNetV2,augmentation,0,0.122
+MobileNetV2,augmentation,0,0.00602
+MobileNetV2,augmentation,0,0.77635
+MobileNetV2,augmentation,1,0.99963
+MobileNetV2,augmentation,1,0.97836
+MobileNetV2,augmentation,0,0.06187
+MobileNetV2,augmentation,0,0.03651
+MobileNetV2,augmentation,0,0.00172
+MobileNetV2,augmentation,0,0.22712
+MobileNetV2,augmentation,1,0.99766
+MobileNetV2,augmentation,0,0.01799
+MobileNetV2,augmentation,0,0.00885
+MobileNetV2,augmentation,1,0.96535
+MobileNetV2,augmentation,0,0.02126
+MobileNetV2,augmentation,0,0.00437
+MobileNetV2,augmentation,0,0.13856
+MobileNetV2,augmentation,1,0.9837
+MobileNetV2,augmentation,0,0.02457
+MobileNetV2,augmentation,1,0.99991
+MobileNetV2,augmentation,0,0.00333
+MobileNetV2,augmentation,0,0.01464
+MobileNetV2,augmentation,0,0.01169
+MobileNetV2,augmentation,0,0.80031
+MobileNetV2,augmentation,0,0.29042
+MobileNetV2,augmentation,1,0.33288
+MobileNetV2,augmentation,0,0.06095
+MobileNetV2,augmentation,0,0.06691
+MobileNetV2,augmentation,0,0.00642
+MobileNetV2,augmentation,0,0.34809
+MobileNetV2,augmentation,0,0.89791
+MobileNetV2,augmentation,0,0.01097
+MobileNetV2,augmentation,1,0.57495
+MobileNetV2,augmentation,0,0.01177
+MobileNetV2,augmentation,0,0.06194
+MobileNetV2,augmentation,0,0.00219
+MobileNetV2,augmentation,1,0.21194
+MobileNetV2,augmentation,1,0.49385
+MobileNetV2,augmentation,0,0.00072
+MobileNetV2,augmentation,1,0.19659
+MobileNetV2,augmentation,0,0.00086
+MobileNetV2,augmentation,0,0.02851
+MobileNetV2,augmentation,0,0.00059
+MobileNetV2,augmentation,0,0.00684
+MobileNetV2,augmentation,0,0.01052
+MobileNetV2,augmentation,0,0.0156
+MobileNetV2,augmentation,0,0.0136
+MobileNetV2,augmentation,0,0.01564
+MobileNetV2,augmentation,0,0.0066
+MobileNetV2,augmentation,1,0.13472
+MobileNetV2,augmentation,0,0.01168
+MobileNetV2,augmentation,0,0.2667
+MobileNetV2,augmentation,0,0.13422
+MobileNetV2,augmentation,0,0.10838
+MobileNetV2,augmentation,1,0.94777
+MobileNetV2,augmentation,1,0.99894
+MobileNetV2,augmentation,0,0.01377
+MobileNetV2,augmentation,0,0.00129
+MobileNetV2,augmentation,0,0.77663
+MobileNetV2,augmentation,0,0.06107
+MobileNetV2,augmentation,0,0.02792
+MobileNetV2,augmentation,1,0.99886
+MobileNetV2,augmentation,0,0.66514
+MobileNetV2,augmentation,0,0.14011
+MobileNetV2,augmentation,0,0.00576
+MobileNetV2,augmentation,0,0.59103
+MobileNetV2,augmentation,1,0.90517
+MobileNetV2,augmentation,1,0.99935
+MobileNetV2,augmentation,0,0.16341
+MobileNetV2,augmentation,0,0.07262
+MobileNetV2,augmentation,0,0.01143
+MobileNetV2,augmentation,0,0.00541
+MobileNetV2,augmentation,1,0.71711
+MobileNetV2,augmentation,1,0.97315
+MobileNetV2,augmentation,0,0.20169
+EfficientNetB0,baseline,0,0.31819
+EfficientNetB0,baseline,0,0.03172
+EfficientNetB0,baseline,1,0.59356
+EfficientNetB0,baseline,0,0.01001
+EfficientNetB0,baseline,0,0.10793
+EfficientNetB0,baseline,0,0.37873
+EfficientNetB0,baseline,0,0.02419
+EfficientNetB0,baseline,0,0.0209
+EfficientNetB0,baseline,0,0.69962
+EfficientNetB0,baseline,1,0.99867
+EfficientNetB0,baseline,1,0.90737
+EfficientNetB0,baseline,0,0.02029
+EfficientNetB0,baseline,0,0.0296
+EfficientNetB0,baseline,0,0.0072
+EfficientNetB0,baseline,0,0.22384
+EfficientNetB0,baseline,1,0.99095
+EfficientNetB0,baseline,0,0.0573
+EfficientNetB0,baseline,0,0.07906
+EfficientNetB0,baseline,1,0.94288
+EfficientNetB0,baseline,0,0.01802
+EfficientNetB0,baseline,0,0.00609
+EfficientNetB0,baseline,0,0.07245
+EfficientNetB0,baseline,1,0.91235
+EfficientNetB0,baseline,0,0.04412
+EfficientNetB0,baseline,1,0.99683
+EfficientNetB0,baseline,0,0.00968
+EfficientNetB0,baseline,0,0.03774
+EfficientNetB0,baseline,0,0.02552
+EfficientNetB0,baseline,0,0.42404
+EfficientNetB0,baseline,0,0.20241
+EfficientNetB0,baseline,1,0.47563
+EfficientNetB0,baseline,0,0.02225
+EfficientNetB0,baseline,0,0.058
+EfficientNetB0,baseline,0,0.01259
+EfficientNetB0,baseline,0,0.39434
+EfficientNetB0,baseline,0,0.48335
+EfficientNetB0,baseline,0,0.01813
+EfficientNetB0,baseline,1,0.39184
+EfficientNetB0,baseline,0,0.00488
+EfficientNetB0,baseline,0,0.06666
+EfficientNetB0,baseline,0,0.00418
+EfficientNetB0,baseline,1,0.047
+EfficientNetB0,baseline,1,0.31428
+EfficientNetB0,baseline,0,0.00312
+EfficientNetB0,baseline,1,0.50268
+EfficientNetB0,baseline,0,0.00233
+EfficientNetB0,baseline,0,0.03155
+EfficientNetB0,baseline,0,0.00338
+EfficientNetB0,baseline,0,0.02301
+EfficientNetB0,baseline,0,0.02405
+EfficientNetB0,baseline,0,0.01191
+EfficientNetB0,baseline,0,0.10641
+EfficientNetB0,baseline,0,0.02422
+EfficientNetB0,baseline,0,0.00542
+EfficientNetB0,baseline,1,0.33802
+EfficientNetB0,baseline,0,0.01468
+EfficientNetB0,baseline,0,0.13679
+EfficientNetB0,baseline,0,0.04426
+EfficientNetB0,baseline,0,0.04498
+EfficientNetB0,baseline,1,0.92046
+EfficientNetB0,baseline,1,0.992
+EfficientNetB0,baseline,0,0.02669
+EfficientNetB0,baseline,0,0.01815
+EfficientNetB0,baseline,0,0.18114
+EfficientNetB0,baseline,0,0.03546
+EfficientNetB0,baseline,0,0.02703
+EfficientNetB0,baseline,1,0.99025
+EfficientNetB0,baseline,0,0.56947
+EfficientNetB0,baseline,0,0.22751
+EfficientNetB0,baseline,0,0.00898
+EfficientNetB0,baseline,0,0.474
+EfficientNetB0,baseline,1,0.39045
+EfficientNetB0,baseline,1,0.99375
+EfficientNetB0,baseline,0,0.05005
+EfficientNetB0,baseline,0,0.02038
+EfficientNetB0,baseline,0,0.33066
+EfficientNetB0,baseline,0,0.00517
+EfficientNetB0,baseline,1,0.78915
+EfficientNetB0,baseline,1,0.91656
+EfficientNetB0,baseline,0,0.18019
+EfficientNetB0,class weights,0,0.54852
+EfficientNetB0,class weights,0,0.09402
+EfficientNetB0,class weights,1,0.81499
+EfficientNetB0,class weights,0,0.024
+EfficientNetB0,class weights,0,0.24363
+EfficientNetB0,class weights,0,0.65998
+EfficientNetB0,class weights,0,0.057
+EfficientNetB0,class weights,0,0.05502
+EfficientNetB0,class weights,0,0.81288
+EfficientNetB0,class weights,1,0.99906
+EfficientNetB0,class weights,1,0.95703
+EfficientNetB0,class weights,0,0.06018
+EfficientNetB0,class weights,0,0.05617
+EfficientNetB0,class weights,0,0.03082
+EfficientNetB0,class weights,0,0.49482
+EfficientNetB0,class weights,1,0.99444
+EfficientNetB0,class weights,0,0.15083
+EfficientNetB0,class weights,0,0.18104
+EfficientNetB0,class weights,1,0.97254
+EfficientNetB0,class weights,0,0.04034
+EfficientNetB0,class weights,0,0.0176
+EfficientNetB0,class weights,0,0.21764
+EfficientNetB0,class weights,1,0.95955
+EfficientNetB0,class weights,0,0.11047
+EfficientNetB0,class weights,1,0.99832
+EfficientNetB0,class weights,0,0.02918
+EfficientNetB0,class weights,0,0.12202
+EfficientNetB0,class weights,0,0.05833
+EfficientNetB0,class weights,0,0.62726
+EfficientNetB0,class weights,0,0.46799
+EfficientNetB0,class weights,1,0.72007
+EfficientNetB0,class weights,0,0.06283
+EfficientNetB0,class weights,0,0.19366
+EfficientNetB0,class weights,0,0.03297
+EfficientNetB0,class weights,0,0.65203
+EfficientNetB0,class weights,0,0.66672
+EfficientNetB0,class weights,0,0.04963
+EfficientNetB0,class weights,1,0.63048
+EfficientNetB0,class weights,0,0.01329
+EfficientNetB0,class weights,0,0.13856
+EfficientNetB0,class weights,0,0.01112
+EfficientNetB0,class weights,1,0.13865
+EfficientNetB0,class weights,1,0.54224
+EfficientNetB0,class weights,0,0.00905
+EfficientNetB0,class weights,1,0.69598
+EfficientNetB0,class weights,0,0.00763
+EfficientNetB0,class weights,0,0.09259
+EfficientNetB0,class weights,0,0.01214
+EfficientNetB0,class weights,0,0.06706
+EfficientNetB0,class weights,0,0.06512
+EfficientNetB0,class weights,0,0.05022
+EfficientNetB0,class weights,0,0.2331
+EfficientNetB0,class weights,0,0.06898
+EfficientNetB0,class weights,0,0.02547
+EfficientNetB0,class weights,1,0.46262
+EfficientNetB0,class weights,0,0.04837
+EfficientNetB0,class weights,0,0.33391
+EfficientNetB0,class weights,0,0.12249
+EfficientNetB0,class weights,0,0.13065
+EfficientNetB0,class weights,1,0.96015
+EfficientNetB0,class weights,1,0.99428
+EfficientNetB0,class weights,0,0.05515
+EfficientNetB0,class weights,0,0.0436
+EfficientNetB0,class weights,0,0.39707
+EfficientNetB0,class weights,0,0.1047
+EfficientNetB0,class weights,0,0.07224
+EfficientNetB0,class weights,1,0.9931
+EfficientNetB0,class weights,0,0.80147
+EfficientNetB0,class weights,0,0.4543
+EfficientNetB0,class weights,0,0.02329
+EfficientNetB0,class weights,0,0.72126
+EfficientNetB0,class weights,1,0.64525
+EfficientNetB0,class weights,1,0.99587
+EfficientNetB0,class weights,0,0.16275
+EfficientNetB0,class weights,0,0.06121
+EfficientNetB0,class weights,0,0.54888
+EfficientNetB0,class weights,0,0.01734
+EfficientNetB0,class weights,1,0.87222
+EfficientNetB0,class weights,1,0.94743
+EfficientNetB0,class weights,0,0.46084
+EfficientNetB0,augmentation,0,0.21127
+EfficientNetB0,augmentation,0,0.02433
+EfficientNetB0,augmentation,1,0.51018
+EfficientNetB0,augmentation,0,0.00983
+EfficientNetB0,augmentation,0,0.07123
+EfficientNetB0,augmentation,0,0.53249
+EfficientNetB0,augmentation,0,0.0399
+EfficientNetB0,augmentation,0,0.01483
+EfficientNetB0,augmentation,0,0.82417
+EfficientNetB0,augmentation,1,0.99826
+EfficientNetB0,augmentation,1,0.93708
+EfficientNetB0,augmentation,0,0.04326
+EfficientNetB0,augmentation,0,0.02971
+EfficientNetB0,augmentation,0,0.00934
+EfficientNetB0,augmentation,0,0.39513
+EfficientNetB0,augmentation,1,0.99516
+EfficientNetB0,augmentation,0,0.0593
+EfficientNetB0,augmentation,0,0.05939
+EfficientNetB0,augmentation,1,0.94172
+EfficientNetB0,augmentation,0,0.01094
+EfficientNetB0,augmentation,0,0.00274
+EfficientNetB0,augmentation,0,0.12561
+EfficientNetB0,augmentation,1,0.97539
+EfficientNetB0,augmentation,0,0.05014
+EfficientNetB0,augmentation,1,0.99545
+EfficientNetB0,augmentation,0,0.00967
+EfficientNetB0,augmentation,0,0.03965
+EfficientNetB0,augmentation,0,0.01682
+EfficientNetB0,augmentation,0,0.64887
+EfficientNetB0,augmentation,0,0.23536
+EfficientNetB0,augmentation,1,0.52728
+EfficientNetB0,augmentation,0,0.02323
+EfficientNetB0,augmentation,0,0.10505
+EfficientNetB0,augmentation,0,0.01271
+EfficientNetB0,augmentation,0,0.51755
+EfficientNetB0,augmentation,0,0.64667
+EfficientNetB0,augmentation,0,0.01615
+EfficientNetB0,augmentation,1,0.44904
+EfficientNetB0,augmentation,0,0.00421
+EfficientNetB0,augmentation,0,0.07598
+EfficientNetB0,augmentation,0,0.00437
+EfficientNetB0,augmentation,1,0.07959
+EfficientNetB0,augmentation,1,0.31725
+EfficientNetB0,augmentation,0,0.00163
+EfficientNetB0,augmentation,1,0.59759
+EfficientNetB0,augmentation,0,0.00191
+EfficientNetB0,augmentation,0,0.05247
+EfficientNetB0,augmentation,0,0.00242
+EfficientNetB0,augmentation,0,0.02737
+EfficientNetB0,augmentation,0,0.02738
+EfficientNetB0,augmentation,0,0.02026
+EfficientNetB0,augmentation,0,0.11068
+EfficientNetB0,augmentation,0,0.01472
+EfficientNetB0,augmentation,0,0.0082
+EfficientNetB0,augmentation,1,0.28995
+EfficientNetB0,augmentation,0,0.01827
+EfficientNetB0,augmentation,0,0.13546
+EfficientNetB0,augmentation,0,0.04998
+EfficientNetB0,augmentation,0,0.04422
+EfficientNetB0,augmentation,1,0.95168
+EfficientNetB0,augmentation,1,0.99011
+EfficientNetB0,augmentation,0,0.02168
+EfficientNetB0,augmentation,0,0.00837
+EfficientNetB0,augmentation,0,0.2637
+EfficientNetB0,augmentation,0,0.05545
+EfficientNetB0,augmentation,0,0.02383
+EfficientNetB0,augmentation,1,0.99123
+EfficientNetB0,augmentation,0,0.70903
+EfficientNetB0,augmentation,0,0.30268
+EfficientNetB0,augmentation,0,0.00845
+EfficientNetB0,augmentation,0,0.77342
+EfficientNetB0,augmentation,1,0.50368
+EfficientNetB0,augmentation,1,0.99681
+EfficientNetB0,augmentation,0,0.11038
+EfficientNetB0,augmentation,0,0.02133
+EfficientNetB0,augmentation,0,0.34233
+EfficientNetB0,augmentation,0,0.00403
+EfficientNetB0,augmentation,1,0.83654
+EfficientNetB0,augmentation,1,0.92653
+EfficientNetB0,augmentation,0,0.29982
