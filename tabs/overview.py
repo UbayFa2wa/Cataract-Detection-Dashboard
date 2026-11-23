@@ -1,96 +1,80 @@
-"""Page 1 - Overview: the headline numbers, the dataset and the whole experiment at a glance."""
+"""Overview: header, KPI row, two chart cards, then one bento block for analytics and workflow."""
 import streamlit as st
-from streamlit_lottie import st_lottie
-
-from components.charts import confusion_fig, donut_fig
-from components.data import load_results
-from components.glossary import metrics_glossary
+from components.charts import class_chart, confusion_chart
+from components.data import load_results, model_result
 from components.home_lottie import lottie_thinking
-from components.ui import TINT, goto, hero, kpi_tiles, panel_title, show
+from components.ui import TINT, card, goto, kpi_tiles, page_header, show
 
-VIDEO_ID = "BXEfJNdXlYM"
+
+def _best():
+    return load_results().sort_values(["mcc", "f1"], ascending=False).iloc[0]
 
 
 def render_overview():
-    res = load_results()
-    best = res.sort_values(["mcc", "f1"], ascending=False).iloc[0]
+    page_header("OVERVIEW", "IPVC <em>Cataract Detection</em>",
+                "Class imbalance in 400 fundus photographs · 6 models · 21 experiments",
+                lottie_thinking, "thinking_hero")
 
-    left, right = st.columns([5, 1])
-    with left:
-        hero("OVERVIEW", "IPVC <em>Cataract Detection</em> under Class Imbalance",
-             "A Streamlit prototype for fundus image classification. It compares classical machine learning and "
-             "neural networks when only one image in four shows cataract, then turns the best model into a "
-             "screening tool.")
-    with right:
-        st_lottie(lottie_thinking, height=120, key="home_lottie")
-
+    best = _best()
+    tp, fn, tn, fp = int(best.TP), int(best.FN), int(best.TN), int(best.FP)
     kpi_tiles([
-        ("Accuracy", f"{best['accuracy']:.1%}", "🎯", "teal", "share of all images right"),
-        ("Recall", f"{best['recall']:.1%}", "🔎", "mint", f"{int(best['TP'])} of 20 cataracts found"),
-        ("Specificity", f"{best['specificity']:.1%}", "🛡️", "sky", f"{int(best['TN'])} of 60 normals cleared"),
-        ("F1-score", f"{best['f1']:.3f}", "⚖️", "violet", "recall and precision balanced"),
-        ("MCC", f"{best['mcc']:.3f}", "📈", "peach", "honest score, -1 to +1"),
+        ("Accuracy", f"{best.accuracy:.1%}", "🎯", "teal", f"{tp + tn} / 80 test images correct"),
+        ("Sensitivity", f"{best.recall:.0%}", "🔎", "mint", f"{tp} / 20 cataracts detected"),
+        ("Specificity", f"{best.specificity:.1%}", "🛡️", "sky", f"{tn} / 60 normal images cleared"),
+        ("F1-score", f"{best.f1:.3f}", "⚖️", "violet", "Cataract F1"),
+        ("MCC", f"{best.mcc:.3f}", "📈", "peach", "Highest of 21 experiments"),
     ])
-    st.caption(f"Best configuration by MCC: **{best['label']}**, scored on 80 unseen test images.")
-    with st.expander("What do these numbers mean?"):
-        metrics_glossary()
+    st.caption(f"{best.model} · {best.strategy} · highest MCC on one 80-image hold-out test set.")
 
-    c1, c2 = st.columns(2)
-    with c1:
-        with st.container(border=True):
-            show(donut_fig("Class distribution: 3 normal for every 1 cataract"))
-    with c2:
-        with st.container(border=True):
-            show(confusion_fig(int(best["TP"]), int(best["FN"]), int(best["TN"]), int(best["FP"]),
-                               f"Best model on the 80 test images: {int(best['FN'])} missed, {int(best['FP'])} false alarms"))
+    left, right = st.columns(2)
+    with left:
+        with card("Dataset", "3:1 class imbalance · 300 normal, 100 cataract"):
+            show(class_chart())
+    with right:
+        with card("Best model", f"{best.model} · {best.strategy} · confusion matrix"):
+            show(confusion_chart(best))
 
-    with st.container(border=True):
-        panel_title("Experiment summary", "all 21 experiments, same 80 test images, best MCC first")
-        fam = st.radio("Family", ["All", "Classical", "Neural"], horizontal=True, key="ov_family",
-                       label_visibility="collapsed")
-        d = res if fam == "All" else res[res["family"] == fam]
-        d = d.sort_values("mcc", ascending=False)
-        table = d[["model", "strategy", "family"]].copy()
-        table.columns = ["Model", "Strategy", "Family"]
-        for col, name in [("accuracy", "Accuracy"), ("recall", "Recall"), ("specificity", "Specificity")]:
-            table[name] = d[col] * 100
-        table["F1"], table["MCC"] = d["f1"], d["mcc"]
-        cc = st.column_config
-        st.dataframe(
-            table, hide_index=True, use_container_width=True, height=420,
-            column_config={
-                "Accuracy": cc.ProgressColumn("Accuracy", min_value=0, max_value=100, format="%.1f%%"),
-                "Recall": cc.ProgressColumn("Recall", min_value=0, max_value=100, format="%.1f%%"),
-                "Specificity": cc.ProgressColumn("Specificity", min_value=0, max_value=100, format="%.1f%%"),
-                "F1": cc.NumberColumn("F1", format="%.3f"),
-                "MCC": cc.NumberColumn("MCC", format="%.3f"),
-            },
-        )
-
-    st.markdown("&nbsp;")
-    steps = [("Descriptive", "What cataract is and what the dataset looks like.", "teal"),
-             ("Diagnostic", "Why classes differ, why accuracy misleads, who misses what.", "violet"),
-             ("Predictive", "Upload a fundus photograph and read the model's score.", "peach"),
-             ("Prescriptive", "Advice and a screening policy built on the result.", "mint")]
-    cards = "".join(
-        f"<div class='step' style='background:{TINT[t][0]};'><b><span class='step-no'>{i}</span>{name}</b>{text}</div>"
-        for i, (name, text, t) in enumerate(steps, start=1))
+    analytics = [
+        ("Descriptive", "What is in the dataset?", "teal"),
+        ("Diagnostic", "What changed with imbalance handling?", "violet"),
+        ("Predictive", "What does the saved model predict?", "peach"),
+        ("Prescriptive", "What is the appropriate next step?", "mint"),
+    ]
+    minis = "".join(
+        f"<div class='mini' style='--tint:{TINT[t][0]}'><b><span class='step-no'>{i}</span>{name}</b>"
+        f"<span class='q'>{question}</span></div>" for i, (name, question, t) in enumerate(analytics, 1))
+    flow = [("01", "Collect", "400 images · 300 normal, 100 cataract"), ("02", "Split", "320 train · 80 test"),
+            ("03", "Process", "Crop · 224×224 · CLAHE"), ("04", "Experiment", "6 models · 21 conditions"),
+            ("05", "Evaluate", "Recall · specificity · F1 · MCC")]
+    rows = "".join(f"<div class='flow-row'><div class='flow-no'>{n}</div><div><b>{t}</b><small>{d}</small></div></div>"
+                   for n, t, d in flow)
     st.markdown(
-        f"""
-        <div class="two-grid">
-          <div class="equal-card"><div class="panel-title">Watch first</div><div style="height:10px"></div>
-            <div class="video-frame"><iframe src="https://www.youtube.com/embed/{VIDEO_ID}" title="Cataract video"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowfullscreen></iframe></div></div>
-          <div class="equal-card"><div class="panel-title">The four-step story</div><div style="height:10px"></div>
-            <div class="step-grid">{cards}</div></div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+        f"<div class='bento'>"
+        f"<div class='cell s7'><div class='bento-title'>Four analytics perspectives</div><div class='mini-grid'>{minis}</div>"
+        f"<div class='bento-sub' style='margin:14px 0 0'>The 21 experiments cover 12 classical and 9 neural configurations; "
+        f"image processing and test split were held constant.</div></div>"
+        f"<div class='cell s5'><div class='bento-title'>Research workflow</div><div class='flow'>{rows}</div></div>"
+        f"</div>", unsafe_allow_html=True)
 
-    st.write("")
-    mid = st.columns([3, 2, 3])[1]
-    with mid:
-        if st.button("START EXPLORING ➜", key="go_explore"):
-            goto("go_to_what_is")
+    base = model_result("EfficientNetB0", "baseline")
+    wt = model_result("EfficientNetB0", "class weights")
+    with st.expander("Baseline vs class weights · screening trade-off"):
+        st.dataframe([
+            {"Configuration": "Baseline · highest MCC", "Sensitivity": f"{base.recall:.0%}", "Specificity": f"{base.specificity:.1%}",
+             "FN": int(base.FN), "FP": int(base.FP), "MCC": round(base.mcc, 3)},
+            {"Configuration": "Class weights · highest recall", "Sensitivity": f"{wt.recall:.0%}", "Specificity": f"{wt.specificity:.1%}",
+             "FN": int(wt.FN), "FP": int(wt.FP), "MCC": round(wt.mcc, 3)},
+        ], hide_index=True, use_container_width=True)
+        st.caption(f"Class weights detect {int(base.FN - wt.FN)} additional cataracts but produce "
+                   f"{int(wt.FP - base.FP)} additional false alarms on this test set.")
+
+    with st.expander("View all 21 experiment results"):
+        df = load_results().sort_values(["mcc", "f1"], ascending=False)
+        st.dataframe(df[["family", "model", "strategy", "accuracy", "recall", "specificity", "f1", "mcc", "FN", "FP"]]
+                     .rename(columns={"family": "Family", "model": "Model", "strategy": "Strategy", "accuracy": "Accuracy",
+                                      "recall": "Sensitivity", "specificity": "Specificity", "f1": "F1", "mcc": "MCC"}),
+                     hide_index=True, use_container_width=True)
+
+    st.caption("Prototype for academic comparison only. Scores are not clinically validated.")
+    if st.button("EXPLORE THE DATA ➜", key="go_explore"):
+        goto("go_to_what_is")

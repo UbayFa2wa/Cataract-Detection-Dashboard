@@ -5,3 +5,11 @@ __pycache__/
 venv/
 dashboard_export/
 .DS_Store
+
+# Never commit local credentials
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+*.pem
+*.key

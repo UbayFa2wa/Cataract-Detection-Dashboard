@@ -1,0 +1,36 @@
+{
+  "source_notebook": "Cataract_classification_clean.ipynb (unchanged; user-uploaded)",
+  "source_results": "final_results_6_models.csv",
+  "main_experiments": 21,
+  "dataset": {
+    "normal": 300,
+    "cataract": 100,
+    "test_normal": 60,
+    "test_cataract": 20
+  },
+  "ranking": "MCC first, F1 tiebreak; sensitivity-oriented weighted model shown separately",
+  "threshold": {
+    "EfficientNetB0": 0.5,
+    "SVM": 0.0
+  },
+  "model_files": {
+    "cataract_efficientnetb0_baseline.keras": "8e12813a6e2a36ce39595e3d6571e0af9cb7541f1bf37b36a8d00d976966c619",
+    "cataract_svm_smote.joblib": "8129d24c8abd276ae77b13106a6c771458291af4d633a18d39bf66aa003b5033",
+    "cataract_efficientnetb0_class_weight.keras": "ac9c74a0fd370f52402fed39dc1100519b9366e15687fea9ca0ab9d34cf7f5f9"
+  },
+  "data_files": {
+    "results.csv": "66ad9e80613198437f1ce57da1099e13136c1787bd33761dea2b063a415d9f4c",
+    "clarity_features.csv": "96ee44d34d2b6244da93b577610bb72184d8900a28f6a4d1d087bd734251a1fa",
+    "repeated_cv.csv": "6f79a7633ff3e29df05fec8c78418b13c038654736b8c1480e8524e82082492a"
+  },
+  "source_files": {
+    "final_results_6_models.csv": "d14911ccdae7dac9348dc72b8ce78c14d371cea96375610905b9ff40b65ee581",
+    "repeated_cv_results_6_models.csv": "348ef5adbe1e9440466b8dc5c29e64179f815570c8516be01b494b214f4ec0b0",
+    "model_comparison_6_models.csv": "db708eb55222d248790ac1bb458eb205b649b18d17985e61fffe15652f21d5b8"
+  },
+  "limitations": [
+    "Model inference on the full 80-image held-out test set not rerun in this environment",
+    "Per-image test_scores.csv from prior GitHub snapshot removed because it disagreed with final run",
+    "Clarity feature data describe the same 400-image collection and match report summaries"
+  ]
+}

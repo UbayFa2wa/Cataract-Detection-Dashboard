@@ -1,10 +1,10 @@
-"""Page 4 - PREDICTIVE and PRESCRIPTIVE analytics.
+"""Original three-panel Screen a Photo dashboard, connected to final validated model assets.
 
-Predictive: upload or pick a fundus photograph, validate it, show what the computer measures and score it.
-Prescriptive: turn the score into actions - advice for the result, how far to trust a positive, and a
-cost-based policy lab that recommends a model and a cutoff.
+This module intentionally restores the old published visual flow, but it never
+uses the earlier test_scores.csv or silently substitutes a different classifier.
 """
 from pathlib import Path
+import hashlib
 
 import cv2
 import numpy as np
@@ -12,348 +12,279 @@ import plotly.graph_objects as go
 import streamlit as st
 from plotly.subplots import make_subplots
 
-from components.data import CLARITY_SUMMARY, load_clarity, load_results, load_test_scores, metrics_at
-from components.fundus_utils import (clarity_maps, cnn_available, preprocess, read_image, score_cnn,
-                                     score_svm, svm_available, validate_fundus)
-from components.glossary import metrics_glossary
-from components.ui import (CATARACT, CLASS_COLOUR, FAMILY_COLOUR, NAVY, NORMAL, chapter, hero, kpi_tiles,
-                           panel_title, show, style, takeaway)
+from components.data import load_clarity, model_result
+from components.fundus_utils import (
+    cnn_available, svm_available, preprocess, read_image, validate_fundus,
+    score_cnn, score_svm, clarity_maps,
+)
+from components.ui import (
+    CATARACT, NORMAL, CLASS_COLOUR, page_header, panel_title, kpi_tiles,
+    chapter, show, style,
+)
+from components.gauge import gauge_svg
+from components.home_lottie import lottie_doctor
+
+PANEL_H = 560
 
 IMG_DIR = Path(__file__).resolve().parents[1] / "assets" / "img"
-SAMPLES = {"Normal 1": "normal_1.jpg", "Normal 2": "normal_2.jpg",
-           "Cataract 1": "cataract_1.jpg", "Cataract 2": "cataract_2.jpg"}
-CNN_LABEL = "EfficientNetB0 + class weights (recommended)"
-SVM_LABEL = "SVM + SMOTE (lighter classical model)"
-
-RULES = """**Accepted:** a colour fundus photograph of one eye. It shows a round, red to orange retina on a dark
-background, like the samples below. JPG or PNG, at least 200 px on the short side.
-
-**Not accepted:** faces, ordinary eye close-ups, screenshots, black-and-white images and scans of printed pictures.
-These return "Image not accepted".
-
-The models were trained on 400 images from one public dataset. Uploaded images are processed in memory and are
-not stored."""
-
-HOSPITAL = """**Hospital Shah Alam (HSAS), Department of Ophthalmology**
-- Address: Persiaran Kayangan, Seksyen 7, 40000 Shah Alam, Selangor
-- Services: secondary and tertiary eye care (including medical retina), 24-hour emergency, optometry
-- Telephone: +60 3-5526 3000
-- Website: https://jknselangor.moh.gov.my/hsas/
-
-Confirm opening hours and referral requirements by phone before visiting. Any eye-care professional can examine
-the lens; HSAS is one example."""
-
-ADVICE_CATARACT = """#### Suggested next steps
-1. **Book a full eye examination** with an optometrist or ophthalmologist. Only an examination of the lens can
-   confirm a cataract.
-2. **Note the symptoms** you have noticed: blurred or cloudy vision, glare, faded colours, trouble seeing at night.
-3. **Do not wait** if there is sudden vision loss, eye pain or redness. Seek urgent care.
-4. **Ask about risk factors** with your doctor, especially diabetes, long-term steroid use and smoking."""
-
-ADVICE_NORMAL = """#### Suggested next steps
-1. **Keep routine eye check-ups**, especially with age, diabetes or other risk factors.
-2. **Watch for symptoms**: blurred vision, glare, faded colours or night-vision trouble. See an eye-care
-   professional if they appear.
-3. **Protect your eyes**: sunglasses with UV protection, no smoking, good blood-sugar control.
-4. **Remember the limits**: "no signal" is not a clearance. In testing, the models still missed some cataract
-   images (see the policy lab below)."""
-
-DISCLAIMER = ("Research demonstration for a university course. It is **not a medical device** and does not give a "
-              "diagnosis. Only an eye-care professional can diagnose a cataract.")
+SAMPLES = {
+    "Normal 1": "normal_1.jpg", "Normal 2": "normal_2.jpg",
+    "Cataract 1": "cataract_1.jpg", "Cataract 2": "cataract_2.jpg",
+}
+CHOICES = {
+    "EfficientNetB0 + class weights (higher sensitivity)": ("EfficientNetB0", "class weights"),
+    "EfficientNetB0 baseline (highest MCC)": ("EfficientNetB0", "baseline"),
+    "SVM + SMOTE (classical comparison)": ("SVM", "SMOTE"),
+}
+DISCLAIMER = (
+    "Research demonstration for a university course. This is **not a medical device** "
+    "and cannot diagnose or exclude cataract."
+)
 
 
-# ----------------------------------------------------------------------------
-# Predictive helpers
-# ----------------------------------------------------------------------------
-@st.cache_data(show_spinner=False)
-def _analyse(img_bytes, model_key):
-    """Validate, preprocess and score one image. Cached per image and model."""
+@st.cache_data(show_spinner=False, max_entries=24)
+def _analyse(img_bytes, model, strategy):
+    """Preprocessing and predictions are exactly those in final components/fundus_utils.py."""
+    if len(img_bytes) > 10 * 1024 * 1024:
+        return {"ok": False, "msg": "Please upload a photograph smaller than 10 MB."}
     rgb = read_image(img_bytes)
     if rgb is None:
-        return {"ok": False, "msg": "The file could not be read as an image."}
-    ok, why = validate_fundus(rgb)
+        return {"ok": False, "msg": "The file could not be decoded as a photograph."}
+    ok, message = validate_fundus(rgb)
     if not ok:
-        return {"ok": False, "msg": why}
+        return {"ok": False, "original": rgb, "msg": message}
     enhanced = preprocess(rgb)
     edges, corners, clarity = clarity_maps(enhanced)
-    note, used = "", model_key
-    try:
-        score = score_cnn(enhanced) if model_key == "cnn" else score_svm(enhanced)
-    except Exception as exc:  # TensorFlow or Keras problem on the server: fall back to the SVM
-        if model_key == "cnn" and svm_available():
-            score, used = score_svm(enhanced), "svm"
-            note = f"EfficientNetB0 could not be loaded on this server ({type(exc).__name__}). The SVM was used instead."
-        else:
-            return {"ok": False, "msg": f"The model could not run ({type(exc).__name__})."}
-    return {"ok": True, "original": cv2.resize(rgb, (224, 224), interpolation=cv2.INTER_AREA),
-            "enhanced": enhanced, "edges": edges, "corners": corners, "clarity": clarity,
-            "score": score, "model": used, "note": note}
-
-
-def _processing_figure(out):
-    corners = cv2.dilate(out["corners"].astype(np.uint8) * 255, np.ones((3, 3), np.uint8))
-    panels = [out["original"], out["enhanced"], np.dstack([out["edges"]] * 3), np.dstack([corners] * 3)]
-    titles = ["1. Original", "2. Crop, resize, CLAHE", f"3. Edges ({out['clarity']['edge_density']:.3f})",
-              f"4. Corners ({out['clarity']['corner_density']:.4f})"]
-    fig = make_subplots(rows=1, cols=4, subplot_titles=titles, horizontal_spacing=0.01)
-    for i, panel in enumerate(panels, start=1):
-        fig.add_trace(go.Image(z=panel, hoverinfo="skip"), row=1, col=i)
-    fig.update_xaxes(visible=False)
-    fig.update_yaxes(visible=False)
-    return style(fig, height=300, legend=False, title="What the computer sees")
-
-
-def _clarity_position(out):
-    """Where does this photograph sit among the two classes? Links back to Chapter 1 of the diagnostic page."""
-    df = load_clarity()
-    measures = list(CLARITY_SUMMARY)
-    keys = ["edge_density", "corner_density", "laplacian_variance"]
-    fig = make_subplots(rows=1, cols=3, subplot_titles=measures)
-    closer = 0
-    for i, (measure, key) in enumerate(zip(measures, keys), start=1):
-        value = out["clarity"][key]
-        if df is not None:
-            for cls in ["Normal", "Cataract"]:
-                fig.add_trace(go.Box(y=df.loc[df["class"] == cls, measure], name=cls, boxpoints=False,
-                                     marker_color=CLASS_COLOUR[cls], showlegend=False,
-                                     hoverinfo="skip"), row=1, col=i)
-            centre = {c: df.loc[df["class"] == c, measure].median() for c in ["Normal", "Cataract"]}
-        else:
-            for cls in ["Normal", "Cataract"]:
-                mean, sd = CLARITY_SUMMARY[measure][cls]
-                fig.add_trace(go.Bar(x=[cls], y=[mean], error_y=dict(type="data", array=[sd]),
-                                     marker_color=CLASS_COLOUR[cls], opacity=0.6, showlegend=False,
-                                     hoverinfo="skip"), row=1, col=i)
-            centre = {c: CLARITY_SUMMARY[measure][c][0] for c in ["Normal", "Cataract"]}
-        fig.add_trace(go.Scatter(x=["Normal", "Cataract"], y=[value, value], mode="lines+markers",
-                                 line=dict(color="#111", dash="dash", width=2), marker=dict(size=8),
-                                 name="This photograph", showlegend=(i == 1),
-                                 hovertemplate=f"This photograph: {value:.4f}<extra></extra>"), row=1, col=i)
-        closer += abs(value - centre["Cataract"]) < abs(value - centre["Normal"])
-    show(style(fig, height=430, legend_below=True, title="Where this photograph sits among the two classes"))
-    return int(closer)
-
-
-def _gauge(score, cutoff, model):
-    if model == "cnn":
-        axis, steps = [0, 1], [{"range": [0, cutoff], "color": "#DDF3EF"}, {"range": [cutoff, 1], "color": "#FDE0DB"}]
-        title = "Model score (cataract side is right of the line)"
-        fmt = ".3f"
+    if model == "SVM":
+        score = score_svm(enhanced)
     else:
-        axis, steps = [-3, 3], [{"range": [-3, 0], "color": "#DDF3EF"}, {"range": [0, 3], "color": "#FDE0DB"}]
-        title = "SVM decision value (cataract side is above 0)"
-        cutoff, fmt = 0.0, ".2f"
-        score = float(np.clip(score, -3, 3))
+        score = score_cnn(enhanced, strategy=strategy)
+    return {
+        "ok": True, "original": rgb, "enhanced": enhanced,
+        "edges": edges, "corners": corners, "clarity": clarity,
+        "score": float(score),
+    }
+
+
+def _bands(lo, hi, light, deep, n=6):
+    """Split [lo, hi] into n bands that darken from `light` to `deep`, which gives the dial a bevelled, solid look."""
+    def mix(i):
+        f = i / (n - 1)
+        return "#%02X%02X%02X" % tuple(round(int(light[k:k + 2], 16) * (1 - f) + int(deep[k:k + 2], 16) * f) for k in (1, 3, 5))
+    edges = [lo + (hi - lo) * i / n for i in range(n + 1)]
+    return [{"range": [edges[i], edges[i + 1]], "color": mix(i)} for i in range(n)]
+
+
+def _gauge(score, cutoff, is_cnn):
+    """Bold, bevelled score dial; score != calibrated disease probability."""
+    if is_cnn:
+        lo, hi, mid = 0.0, 1.0, cutoff
+        title, fmt = "Uncalibrated model score", ".3f"
+    else:
+        hi = max(2.0, min(10.0, abs(score) * 1.25)); lo, mid = -hi, 0.0
+        title, fmt = "SVM decision value", ".2f"
+    steps = _bands(lo, mid, "#7FE3D3", "#07806F") + _bands(mid, hi, "#FF9A86", "#D2321B")
     fig = go.Figure(go.Indicator(
-        mode="gauge+number", value=score, number=dict(valueformat=fmt),
-        title=dict(text=title, font=dict(size=14)),
-        gauge=dict(axis=dict(range=axis), bar=dict(color="#333"), steps=steps,
-                   threshold=dict(line=dict(color=CATARACT, width=4), thickness=0.85, value=cutoff)),
+        mode="gauge+number", value=score,
+        number=dict(valueformat=fmt, font=dict(size=46, color="#0B2E3F", family="Plus Jakarta Sans, Inter, sans-serif")),
+        title=dict(text=f"<b>{title}</b>", font=dict(size=15, family="Plus Jakarta Sans, Inter, sans-serif")),
+        gauge=dict(
+            axis=dict(range=[lo, hi], tickwidth=2, tickcolor="#0B2E3F", tickfont=dict(size=12, color="#0B2E3F")),
+            bar=dict(color="#0B2E3F", thickness=0.34, line=dict(color="#FFFFFF", width=2)),
+            bgcolor="#FFFFFF", borderwidth=5, bordercolor="#0B2E3F", steps=steps,
+            threshold=dict(line=dict(color="#111111", width=6), thickness=0.95, value=mid),
+        ),
     ))
     return style(fig, height=250, legend=False)
 
 
-# ----------------------------------------------------------------------------
-# Prescriptive helpers
-# ----------------------------------------------------------------------------
-def _set_cutoff(value):
-    st.session_state["cutoff"] = float(value)
+def _processing_figure(out):
+    corner_img = cv2.dilate(out["corners"].astype(np.uint8) * 255,
+                            np.ones((3, 3), np.uint8))
+    panels = [cv2.resize(out["original"], (224, 224)), out["enhanced"],
+              np.dstack([out["edges"]] * 3), np.dstack([corner_img] * 3)]
+    captions = ["Original", "Crop + CLAHE", "Canny edges", "Harris corners"]
+    fig = make_subplots(rows=1, cols=4, subplot_titles=captions, horizontal_spacing=0.01)
+    for i, img in enumerate(panels, start=1):
+        fig.add_trace(go.Image(z=img, hoverinfo="skip"), row=1, col=i)
+    fig.update_xaxes(visible=False)
+    fig.update_yaxes(visible=False)
+    return style(fig, height=280, legend=False)
 
 
-def _policy_lab(res):
-    ratio = st.slider("A missed cataract is as costly as this many false alarms", 1, 10, 3, key="cost_ratio",
-                      help="1 means both mistakes cost the same. 5 means a missed cataract is five times worse "
-                           "than sending a healthy person for an extra eye examination.")
-    floor = st.slider("Minimum specificity the clinic can tolerate", 0, 95, 50, 5, key="spec_floor",
-                      format="%d%%", help="Specificity is the share of healthy eyes correctly cleared.")
-    d = res.copy()
-    d["cost"] = ratio * d["FN"] + d["FP"]
-    ok = d[d["specificity"] >= floor / 100].sort_values(["cost", "mcc"], ascending=[True, False])
-    if ok.empty:
-        st.warning("No configuration meets that specificity. Lower the minimum.")
-        return
-    top = ok.iloc[0]
-    st.success(
-        f"**Recommended configuration: {top['label']}.** With a miss weighted {ratio}× a false alarm, it has the "
-        f"lowest expected cost on the test set: {int(top['FN'])} of 20 cataracts missed and {int(top['FP'])} "
-        f"false alarms among 60 healthy images (recall {top['recall']:.0%}, specificity {top['specificity']:.0%})."
-    )
-    shown = ok.head(10).iloc[::-1]
-    fig = go.Figure(go.Bar(
-        x=shown["cost"], y=shown["label"], orientation="h",
-        marker_color=[FAMILY_COLOUR[f] for f in shown["family"]],
-        text=[f"{int(c)}" for c in shown["cost"]], textposition="outside",
-        customdata=np.stack([shown["FN"], shown["FP"], shown["recall"], shown["specificity"]], axis=-1),
-        hovertemplate="<b>%{y}</b><br>Cost %{x}<br>Missed %{customdata[0]}, false alarms %{customdata[1]}"
-                      "<br>Recall %{customdata[2]:.0%}, specificity %{customdata[3]:.0%}<extra></extra>",
-    ))
-    fig.update_xaxes(title=f"Expected cost = {ratio} × missed + false alarms (lower is better)")
-    show(style(fig, height=max(320, 34 * len(shown) + 110), legend=False,
-               title="The ten lowest-cost configurations", right=40))
-
-    ts = load_test_scores()
-    if ts is not None and "EfficientNetB0 + class weights" in set(ts["label"]):
-        d2 = ts[ts["label"] == "EfficientNetB0 + class weights"]
-        best = None
-        for t in np.round(np.arange(0.05, 0.96, 0.01), 2):
-            m = metrics_at(d2["y_true"], d2["score"], t)
-            cost = ratio * m["FN"] + m["FP"]
-            key = (cost, -m["mcc"])
-            if m["specificity"] >= floor / 100 and (best is None or key < best[0]):
-                best = (key, t, m)
-        if best:
-            _, t, m = best
-            c1, c2 = st.columns([3, 1])
-            c1.markdown(
-                f"For EfficientNetB0 with class weights, the cutoff with the lowest cost is **{t:.2f}**: "
-                f"{m['FN']} missed, {m['FP']} false alarms (recall {m['recall']:.0%}, specificity "
-                f"{m['specificity']:.0%})."
-            )
-            c2.button("Use this cutoff", key="apply_cutoff", on_click=_set_cutoff, args=(t,))
-    st.caption("Counts come from 80 test images, only 20 with cataract. Treat the recommendation as a "
-               "direction, not a guarantee.")
+def _clarity_figure(out):
+    """Descriptive overlay, not evidence for independent cataract diagnosis."""
+    df = load_clarity()
+    items = [
+        ("Edge density", "edge_density"),
+        ("Corner density", "corner_density"),
+        ("Laplacian variance", "laplacian_variance"),
+    ]
+    fig = make_subplots(rows=1, cols=3, subplot_titles=[name for name, _ in items])
+    for i, (_, key) in enumerate(items, start=1):
+        for cls in ("Normal", "Cataract"):
+            fig.add_trace(go.Box(
+                y=df.loc[df["class"] == cls, key], name=cls, boxpoints=False,
+                marker_color=CLASS_COLOUR[cls], showlegend=(i == 1),
+                hoverinfo="skip"), row=1, col=i)
+        fig.add_hline(y=out["clarity"][key], line=dict(color="#0B2E3F", dash="dash", width=2),
+                      row=1, col=i)
+    return style(fig, height=330, legend_below=True)
 
 
-# ----------------------------------------------------------------------------
-# Page
-# ----------------------------------------------------------------------------
+def _store_sample(name, filename):
+    # No upload override unless a *new* upload is selected.
+    st.session_state["screen_selected_img"] = {
+        "name": name, "bytes": (IMG_DIR / filename).read_bytes(), "source": "sample",
+    }
+
+
 def render_screen_yourself():
-    res = load_results()
-
-    hero("STEP 3 · PREDICTIVE  +  STEP 4 · PRESCRIPTIVE", "Screen a <em>photograph</em>, then decide what to do",
-         "Pick a model and a cutoff, choose a fundus photograph and read the result. The lower half turns the "
-         "result into advice, a trust estimate and a screening policy.")
+    page_header(
+        "STEP 3 · PREDICTIVE + STEP 4 · PRESCRIPTIVE",
+        "Screen a <em>photograph</em>, then decide what to do",
+        "Choose a model and fundus photograph. Explore its score, see the result and compare "
+        "the model's test-set metrics.",
+        lottie_doctor, "doctor_screen",
+    )
     st.markdown(f"<div class='disclaimer'>⚠️ {DISCLAIMER}</div>", unsafe_allow_html=True)
 
-    models = {}
-    if cnn_available():
-        models[CNN_LABEL] = "cnn"
-    if svm_available():
-        models[SVM_LABEL] = "svm"
+    models = {
+        title: pair for title, pair in CHOICES.items()
+        if (svm_available() if pair[0] == "SVM" else cnn_available(pair[1]))
+    }
     if not models:
-        st.error("No model file was found in assets/models/.")
+        st.error("No saved model is available. Check assets/models/ and TensorFlow installation.")
         return
 
-    # ---------------- control bar ----------------
+    # Restore the original horizontal control bar.
     with st.container(border=True):
         b1, b2, b3 = st.columns([2.2, 3, 1.3])
-        model_label = b1.selectbox("Select model", list(models), key="screen_model")
-        is_cnn = models[model_label] == "cnn"
-        st.session_state.setdefault("cutoff", 0.5)
-        b2.slider("Decision threshold (cataract when score is at least this)", 0.05, 0.95, step=0.01,
-                  key="cutoff", disabled=not is_cnn,
-                  help="Scores come from the sigmoid output of EfficientNetB0 and are not calibrated. 0.5 is the "
-                       "study default. The policy lab can suggest a value. The SVM uses its own boundary.")
-        show_expl = b3.toggle("Show explanation", value=True, key="show_expl")
-    cutoff = st.session_state["cutoff"] if is_cnn else 0.0
+        selected = b1.selectbox("Select model", list(models), key="dashboard_selected_model")
+        model, strategy = models[selected]
+        is_cnn = model == "EfficientNetB0"
+        cutoff = b2.slider(
+            "Decision threshold (cataract when score is at least this)",
+            min_value=0.05, max_value=0.95, value=0.50, step=0.01,
+            disabled=not is_cnn, key="dashboard_cutoff",
+            help="Original reported EfficientNetB0 metrics use 0.50. Changing this slider "
+                 "affects only the current demonstration prediction and does NOT update test metrics. "
+                 "The SVM uses the zero decision boundary.",
+        )
+        show_explanation = b3.toggle("Show explanation", value=True, key="dashboard_show_explanation")
+    if is_cnn and cutoff != 0.50:
+        st.caption("Exploratory cutoff %.2f for this photograph only. KPI cards below always report "
+                   "the original 0.50 test-set cutoff." % cutoff)
 
-    # ---------------- choose / preview / result ----------------
-    colA, colB, colC = st.columns([1.15, 1, 1.15])
-    with colA:
-        with st.container(border=True):
+    # Restore 3-panel dashboard from the originally published screenshot.
+    col_a, col_b, col_c = st.columns([1.2, 1, 1.1])
+    with col_a:
+        with st.container(border=True, height=PANEL_H):
             panel_title("Choose a fundus image")
-            t_sample, t_upload = st.tabs(["Samples", "Upload"])
-            with t_sample:
+            samples_tab, upload_tab = st.tabs(["Samples", "Upload"])
+            with samples_tab:
                 grid = st.columns(2)
-                for n, (name, file) in enumerate(SAMPLES.items()):
-                    with grid[n % 2]:
-                        st.image(str(IMG_DIR / file), use_container_width=True)
-                        if st.button(name, key=f"pick_{name}", use_container_width=True):
-                            st.session_state["screen_img"] = {"name": name, "bytes": (IMG_DIR / file).read_bytes()}
-                st.caption("Samples come from the public dataset. Some may have been used in training, so a "
-                           "correct result here is a demonstration, not evidence of accuracy.")
-            with t_upload:
-                up = st.file_uploader("JPG or PNG, max 10 MB", type=["jpg", "jpeg", "png"], key="screen_upload")
-                if up is not None:
-                    st.session_state["screen_img"] = {"name": up.name, "bytes": up.getvalue()}
+                for i, (name, filename) in enumerate(SAMPLES.items()):
+                    with grid[i % 2]:
+                        st.image(str(IMG_DIR / filename), use_container_width=True)
+                        st.button(name, key=f"dashboard_pick_{name}", use_container_width=True,
+                                  on_click=_store_sample, args=(name, filename))
+                st.caption("Samples come from the source dataset and are demonstrations, "
+                           "not an independent accuracy test.")
+            with upload_tab:
+                uploaded = st.file_uploader(
+                    "Upload JPG/PNG (max 10 MB)", type=["jpg", "jpeg", "png"],
+                    key="dashboard_upload",
+                )
+                if uploaded is not None:
+                    content = uploaded.getvalue()
+                    fingerprint = hashlib.sha256(content).hexdigest()
+                    if fingerprint != st.session_state.get("dashboard_uploaded_fingerprint"):
+                        st.session_state["dashboard_uploaded_fingerprint"] = fingerprint
+                        st.session_state["screen_selected_img"] = {
+                            "name": uploaded.name, "bytes": content, "source": "upload",
+                        }
                 with st.expander("Which images are accepted?"):
-                    st.markdown(RULES)
+                    st.write("Use an individual colour retinal fundus photograph (JPG/PNG) "
+                             "with a dark background, similar to the samples. "
+                             "The image-format check is approximate and does not verify medical content.")
 
-    chosen = st.session_state.get("screen_img")
-    out = None
+    chosen = st.session_state.get("screen_selected_img")
+    result = None
     if chosen is not None:
-        with st.spinner("Analysing. The first run loads the model and can take a minute."):
-            out = _analyse(chosen["bytes"], models[model_label])
+        try:
+            with st.spinner("Analysing fundus image..."):
+                result = _analyse(chosen["bytes"], model, strategy)
+        except Exception as exc:
+            result = {"ok": False,
+                      "msg": f"The selected model could not run ({type(exc).__name__}). "
+                             "No other model was substituted."}
 
-    with colB:
-        with st.container(border=True):
+    with col_b:
+        with st.container(border=True, height=PANEL_H):
             panel_title("Fundus image", chosen["name"] if chosen else None)
             if chosen is None:
                 st.info("No image yet. Pick a sample or upload one.")
-            elif out["ok"]:
-                st.image(out["original"], use_container_width=True)
-                st.caption("Accepted as a fundus photograph.")
+            elif result is not None and result.get("original") is not None:
+                st.image(cv2.resize(result["original"], (224, 224)), use_container_width=True)
+                if result["ok"]:
+                    st.caption("Fundus image accepted for demonstration.")
             else:
-                st.image(chosen["bytes"], use_container_width=True)
+                st.info("Image preview unavailable.")
 
     signal = None
-    with colC:
-        with st.container(border=True):
+    with col_c:
+        with st.container(border=True, height=PANEL_H):
             panel_title("Prediction result")
             if chosen is None:
                 st.info("The result appears here.")
-            elif not out["ok"]:
-                st.error(f"**Image not accepted.** {out['msg']}")
+            elif not result["ok"]:
+                st.error(f"Image not accepted or model unavailable. {result['msg']}")
             else:
-                if out["note"]:
-                    st.warning(out["note"])
-                used_cnn = out["model"] == "cnn"
-                signal = out["score"] >= (cutoff if used_cnn else 0.0)
+                threshold = cutoff if is_cnn else 0.0
+                signal = result["score"] >= threshold
                 colour = CATARACT if signal else NORMAL
                 word = "Cataract signal" if signal else "No cataract signal"
-                icon = "👁️" if signal else "✅"
                 st.markdown(
-                    f"<div style='text-align:center;margin:4px 0 8px 0;'><span class='result-pill' "
-                    f"style='background:{colour};'>{icon} {word}</span></div>"
-                    f"<div style='font-size:13px;color:#4B6470;text-align:center;'>This research prototype "
-                    f"flags the image as <b style='color:{colour};'>{'cataract' if signal else 'normal'}</b>. "
-                    f"Use for academic demonstration only.</div>",
+                    f"<div style='text-align:center;margin:7px 0 10px 0'>"
+                    f"<span class='result-pill' style='background:{colour};'>"
+                    f"{'👁️' if signal else '✅'} {word}</span></div>",
                     unsafe_allow_html=True,
                 )
-                show(_gauge(out["score"], cutoff, out["model"]))
+                st.caption("Research prediction only, not a medical diagnosis or clearance.")
+                st.markdown(gauge_svg(result["score"], threshold, is_cnn), unsafe_allow_html=True)
+                st.caption(f"{('Uncalibrated sigmoid score' if is_cnn else 'SVM decision value')}: "
+                           f"{result['score']:.4f}")
 
-    # ---------------- model KPIs ----------------
-    key = (("EfficientNetB0", "class weights") if models[model_label] == "cnn" else ("SVM", "SMOTE"))
-    row = res[(res["model"] == key[0]) & (res["strategy"] == key[1])].iloc[0]
-    st.markdown(f"##### Test-set performance of {row['label']}")
+    # The cards always come from authoritative 21-result CSV at documented decision rules.
+    row = model_result(model, strategy)
+    chapter("★", f"Test-set performance of {model}", f"{strategy} · fixed 80-image hold-out set")
     kpi_tiles([
-        ("Accuracy", f"{row['accuracy']:.1%}", "🎯", "teal", "80 unseen images"),
-        ("Recall", f"{row['recall']:.1%}", "🔎", "mint", f"{int(row['FN'])} of 20 cataracts missed"),
-        ("Specificity", f"{row['specificity']:.1%}", "🛡️", "sky", f"{int(row['FP'])} false alarms of 60"),
-        ("F1-score", f"{row['f1']:.3f}", "⚖️", "violet", "cataract class"),
-        ("MCC", f"{row['mcc']:.3f}", "📈", "peach", "balanced single score"),
+        ("Accuracy", f"{row.accuracy:.2%}", "🎯", "teal", "80 held-out images"),
+        ("Recall", f"{row.recall:.0%}", "🔎", "mint", f"{int(row.FN)} of 20 cataracts missed"),
+        ("Specificity", f"{row.specificity:.0%}", "🛡️", "sky", f"{int(row.FP)} false alarms of 60"),
+        ("F1-score", f"{row.f1:.3f}", "⚖️", "violet", "Cataract F1"),
+        ("MCC", f"{row.mcc:.3f}", "📈", "peach", "Balanced-class metric"),
     ])
+    st.caption("Metrics above refer to the documented fixed-threshold 80-image test set. "
+               "They do not represent the probability that the uploaded image is correctly labelled.")
 
-    with st.expander("What do these numbers mean?"):
-        metrics_glossary()
+    if result is not None and result["ok"] and show_explanation:
+        chapter(1, "What the computer sees", "Same preprocessing and clarity measures as the notebook.")
+        show(_processing_figure(result))
+        with st.expander("How does this photo compare with the dataset?"):
+            show(_clarity_figure(result))
+            st.caption("Clarity descriptors are not clinical cataract biomarkers. "
+                       "Camera settings, focus and lighting also affect these measurements.")
 
-    # ---------------- explanation ----------------
-    if out is not None and out["ok"] and show_expl:
-        chapter(1, "What the computer measures", "The same three clarity measurements as the diagnostic page.")
-        show(_processing_figure(out))
-        closer = _clarity_position(out)
-        st.caption(f"On {closer} of 3 measurements this photograph sits closer to the cataract group. "
-                   "Dashed line: this photograph.")
-
-    # ---------------- prescriptive ----------------
-    chapter(2, "What to do next", "Advice that follows the result.")
+    chapter(2, "What to do next", "The result should be interpreted cautiously.")
     if signal is None:
-        st.info("Choose an accepted fundus image to see advice for its result.")
+        st.info("Choose a sample or upload an accepted fundus image to see the short guidance.")
+    elif signal:
+        st.warning("A cataract signal was detected. Arrange an eye examination with an "
+                   "optometrist or ophthalmologist; this model cannot confirm cataract.")
     else:
-        a, b = st.columns(2)
-        with a:
-            with st.container(border=True):
-                st.markdown(ADVICE_CATARACT if signal else ADVICE_NORMAL)
-        with b:
-            with st.container(border=True):
-                st.markdown(HOSPITAL)
-
-    chapter(3, "Policy lab", "Which model and cutoff suit a clinic that fears missing cataracts?")
-    _policy_lab(res)
-    takeaway(
-        "A screening programme that cannot afford missed cataracts accepts more false alarms and favours "
-        "high recall. A programme with scarce examination slots raises the specificity floor. The data "
-        "informs the choice; the clinic makes it.",
-        kind="next",
-    )
-    st.caption(DISCLAIMER)
+        st.info("No cataract signal was detected by this model. This does not rule out "
+                "cataract or other eye conditions. Seek professional advice if symptoms occur.")
+    st.caption("No extra cutoff or model was selected using the historical test-scores file. "
+               "Only the selected, explicitly named saved model is used.")

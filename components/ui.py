@@ -1,6 +1,8 @@
 """Shared look: palette, Plotly styling and small HTML blocks used by every page."""
 import re
 
+from contextlib import contextmanager
+
 import streamlit as st
 
 # ---- palette: teal (normal, primary) + coral (cataract, alert) on deep navy ----
@@ -55,12 +57,29 @@ def show(fig):
 
 def hero(tag, title, text=None):
     body = f"<div class='hero-text'>{text}</div>" if text else ""
-    st.markdown(
-        f"""<div class="hero"><div class="hero-bar"></div><div>
-              <div class="page-tag">{tag}</div><div class="hero-title">{title}</div>{body}
-            </div></div>""",
-        unsafe_allow_html=True,
-    )
+    st.markdown(f"<div class='hero'><div class='page-tag'>{tag}</div><div class='hero-title'>{title}</div>{body}</div>",
+                unsafe_allow_html=True)
+
+
+def page_header(tag, title, text, animation, key, height=170):
+    """Bento header: wide title card + small animation card, both with the same fixed height."""
+    from streamlit_lottie import st_lottie
+    left, right = st.columns([4, 1])
+    with left:
+        with st.container(border=True, key="hero", height=height):
+            hero(tag, title, text)
+    with right:
+        with st.container(border=True, height=height):
+            st_lottie(animation, height=height - 40, key=key)
+
+
+@contextmanager
+def card(title=None, sub=None, height="content"):
+    """A bordered bento card with an optional title; fixed height keeps neighbouring cards aligned."""
+    with st.container(border=True, height=height):
+        if title:
+            panel_title(title, sub)
+        yield
 
 
 def kpi_tiles(items):
@@ -68,11 +87,9 @@ def kpi_tiles(items):
     cells = ""
     for label, value, icon, tint, caption in items:
         bg, fg = TINT[tint]
-        cells += (f"<div class='kpi' style='background:linear-gradient(135deg,{bg},#ffffff);"
-                  f"border:1px solid {bg};'><div class='kpi-top'><span class='kpi-icon' style='background:{fg}1A;"
-                  f"color:{fg};'>{icon}</span><span class='kpi-label'>{label}</span></div>"
-                  f"<div class='kpi-value' style='color:{fg};'>{value}</div>"
-                  f"<div class='kpi-cap'>{caption}</div></div>")
+        cells += (f"<div class='kpi' style='--tone:{fg};--tint:{bg};'><div class='kpi-top'>"
+                  f"<span class='kpi-icon'>{icon}</span><span class='kpi-label'>{label}</span></div>"
+                  f"<div class='kpi-value'>{value}</div><div class='kpi-cap'>{caption}</div></div>")
     st.markdown(f"<div class='kpi-row'>{cells}</div>", unsafe_allow_html=True)
 
 

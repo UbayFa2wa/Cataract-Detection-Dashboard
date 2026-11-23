@@ -14,7 +14,10 @@ from skimage.feature import graycomatrix, graycoprops, hog, local_binary_pattern
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 MODEL_DIR = BASE_DIR / "assets" / "models"
-CNN_PATH = MODEL_DIR / "cataract_efficientnetb0_class_weight.keras"
+CNN_PATHS = {
+    "baseline": MODEL_DIR / "cataract_efficientnetb0_baseline.keras",
+    "class weights": MODEL_DIR / "cataract_efficientnetb0_class_weight.keras",
+}
 SVM_PATH = MODEL_DIR / "cataract_svm_smote.joblib"
 IMG_SIZE = 224
 
@@ -121,18 +124,18 @@ def feature_vector(enhanced, edges, corner_density, lap_var):
 # ----------------------------------------------------------------------------
 # 4. Models (loaded once per server process)
 # ----------------------------------------------------------------------------
-def cnn_available():
-    return CNN_PATH.is_file() and find_spec("tensorflow") is not None
+def cnn_available(strategy="class weights"):
+    return CNN_PATHS[strategy].is_file() and find_spec("tensorflow") is not None
 
 
 def svm_available():
     return SVM_PATH.is_file()
 
 
-@lru_cache(maxsize=1)
-def _load_cnn():
+@lru_cache(maxsize=2)
+def _load_cnn(strategy):
     import tensorflow as tf
-    return tf.keras.models.load_model(CNN_PATH)
+    return tf.keras.models.load_model(str(CNN_PATHS[strategy]), compile=False)
 
 
 @lru_cache(maxsize=1)
@@ -141,9 +144,9 @@ def _load_svm():
     return joblib.load(SVM_PATH)
 
 
-def score_cnn(enhanced):
-    """Sigmoid score of EfficientNetB0 (uncalibrated). Cataract when the score is at least the threshold."""
-    model = _load_cnn()
+def score_cnn(enhanced, strategy="class weights"):
+    """Uncalibrated EfficientNetB0 score; notebook uses the fixed 0.5 cutoff."""
+    model = _load_cnn(strategy)
     return float(model.predict(enhanced[None].astype("float32"), verbose=0)[0, 0])
 
 
